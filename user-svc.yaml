@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: user-svc
+  labels: 
+    app: usersvc
+spec: 
+  selector:
+    matchLabels:
+      app: usersvc
+  template: 
+    metadata: 
+      labels:
+        app: usersvc
+    spec:
+      containers: 
+        - name: usersvc
+          image: shaikkhajaibrahim/libuserssvc:1.0
+          resources: 
+            requests: 
+              memory: 24M
+              cpu: 100m
+              limits: 
+              memory: 160M
+              cpu: 500m  
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://user:password@user-db:5432/userdb"
+            - name: SECRET_KEY
+              value: "YtDEVWnL35aAIP-5yxeLjAZ49R920-mMNDfwPyWULu63HFsYzo0f-LO2InxC8eu428k" 
+          ports:
+          - containerPort: 8080
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-svc
+spec:
+  selector:
+    app: user-svc
+  type: ClusterIP
+  ports: 
+  - port: 8080
+    targetPort: 8080     
+              
+          
